@@ -1,114 +1,172 @@
-import Image from "next/image";
-import { Geist, Geist_Mono } from "next/font/google";
-
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
-});
-
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
-  subsets: ["latin"],
-});
+import BusinessCard from "@/components/BusinessCard";
+import { useEffect, useState } from "react";
 
 export default function Home() {
-  return (
-    <div
-      className={`${geistSans.variable} ${geistMono.variable} grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]`}
-    >
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/pages/index.js
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [users, setUsers] = useState([]); // Holds the business card data
+  const [currentPage, setCurrentPage] = useState(1); // Track the current page
+  const [totalCount, setTotalCount] = useState(0); // Total number of records from the DB
+  const [loading, setLoading] = useState(false); // Loading state
+  const [type, setType] = useState(0); // Type of users (people, business, sponsor)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+  const limit = 15; // Number of business cards per page
+
+  useEffect(() => {
+    // fetchUsers();
+  }, [currentPage, type]); // Fetch users when currentPage or type changes
+
+  const fetchUsers = async () => {
+    setLoading(true);
+
+    try {
+      const offset = (currentPage - 1) * limit; // Calculate the offset
+      const response = await fetch(`/api/businessCards?type=${type}&limit=${limit}&offset=${offset}`);
+      const data = await response.json();
+
+      setUsers(data.cards); // Assuming the response contains a 'cards' key with the data
+      setTotalCount(data.totalCount); // Assuming the response contains the total number of records
+    } catch (error) {
+      console.error("Error fetching business cards:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  const totalPages = Math.ceil(totalCount / limit); // Calculate total pages based on totalCount
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePrevPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
+
+  const handlePageClick = (page) => {
+    setCurrentPage(page);
+  };
+
+  // Render page numbers around the current page
+  const renderPageNumbers = () => {
+    const pages = [];
+    const range = 2; // Number of pages to show before and after currentPage
+
+    // Add previous pages
+    for (let i = Math.max(currentPage - range, 1); i < currentPage; i++) {
+      pages.push(i);
+    }
+
+    // Add the current page
+    pages.push(currentPage);
+
+    // Add next pages
+    for (let i = currentPage + 1; i <= Math.min(currentPage + range, totalPages); i++) {
+      pages.push(i);
+    }
+
+    return pages.map((page) => (
+      <button
+        key={page}
+        onClick={() => handlePageClick(page)}
+        className={`px-4 py-2 ${page === currentPage ? 'bg-black text-white' : 'bg-gray-100'}`}
+        style={{ fontFamily: 'American Typewriter' }}
+      >
+        {page}
+      </button>
+    ));
+  };
+
+  return (
+    <div className="flex justify-center min-h-screen mb-2">
+      <div className="w-[80%]">
+        <div className="flex justify-start mb-16 text-xs">
+          <button
+            onClick={() => setType(0)}
+            className={type === 0 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 bg-gray-100 mr-8 w-[15%]"}
+            style={{ fontFamily: 'Type Machine' }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            people
+          </button>
+          <button
+            onClick={() => setType(1)}
+            className={type === 1 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 bg-gray-100 mr-8 w-[15%]"}
+            style={{ fontFamily: 'Type Machine' }}
           >
-            Read our docs
-          </a>
+            business
+          </button>
+          <button
+            onClick={() => setType(2)}
+            className={type === 2 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 bg-gray-100 mr-8 w-[15%]"}
+            style={{ fontFamily: 'Type Machine' }}
+          >
+            sponsor
+          </button>
         </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=default-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+
+        {/* Grid Layout: Responsive for mobile */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1">
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            users.map((user) => (
+              <BusinessCard
+                key={user.id} // Assuming each user has a unique 'id'
+                name={user.name}
+                title={user.title}
+                companyName={user.companyName}
+                twitter={user.twitter}
+                telegram={user.telegram}
+                linkedIn={user.linkedIn}
+                email={user.email}
+                phone={user.phone}
+              />
+            ))
+          )}
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          <BusinessCard />
+          
+          
+        </div>
+
+        {/* Pagination Controls */}
+        <div className="flex justify-between mt-4 items-center text-xs">
+          <button
+            onClick={handlePrevPage}
+            disabled={currentPage === 1}
+            className="px-4 py-2 bg-gray-200"
+            style={{ fontFamily: 'Type Machine' }}
+          >
+            {`< Back`}
+          </button>
+
+          <div className="flex space-x-2">
+            {renderPageNumbers()}
+          </div>
+
+          <button
+            onClick={handleNextPage}
+            disabled={currentPage === totalPages}
+            className="px-4 py-2 bg-gray-200"
+            style={{ fontFamily: 'Type Machine' }}
+          >
+            {`Next >`}
+          </button>
+        </div>
+      </div>
     </div>
   );
 }

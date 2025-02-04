@@ -1,21 +1,48 @@
+/* styles/globals.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=American+Typewriter&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Type+Machine&display=swap');
+
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
+.header {
+  background-color: #f3af19;
+  color: black
 }
 
 body {
-  color: var(--foreground);
-  background: var(--background);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Inter', sans-serif;
+  color: bl;
+  background-color: #f3af19;
+}
+
+.footer {
+  background-color: #000;
+  color: #fff;
+  padding: 2rem 1rem;
+}
+
+.footer a {
+  color: #9CA3AF;
+  transition: color 0.3s ease;
+}
+
+.footer a:hover {
+  color: #f3af19;
+}
+
+.footer .footer-title {
+  color: #f3af19;
+  font-weight: 600;
+}
+
+.footer .search-input {
+  background-color: #fff;
+  padding: 0.75rem 1rem;
+  border-radius: 5px;
+  color: #333;
+  border: none;
 }
