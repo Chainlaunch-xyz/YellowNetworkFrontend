@@ -1,4 +1,5 @@
 import BusinessCard from "@/components/BusinessCard";
+import InviteCard from "@/components/InviteCard";
 import { useEffect, useState } from "react";
 
 export default function Home() {
@@ -81,25 +82,25 @@ export default function Home() {
 
   return (
     <div className="flex justify-center min-h-screen mb-2">
-      <div className="w-[80%]">
-        <div className="flex justify-start mb-16 text-xs">
+      <div className="w-[70%]">
+        <div className="flex justify-center mb-16 text-xs">
           <button
             onClick={() => setType(0)}
-            className={type === 0 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 bg-gray-100 mr-8 w-[15%]"}
+            className={type === 0 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
             style={{ fontFamily: 'Type Machine' }}
           >
             people
           </button>
           <button
             onClick={() => setType(1)}
-            className={type === 1 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 bg-gray-100 mr-8 w-[15%]"}
+            className={type === 1 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
             style={{ fontFamily: 'Type Machine' }}
           >
             business
           </button>
           <button
             onClick={() => setType(2)}
-            className={type === 2 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 bg-gray-100 mr-8 w-[15%]"}
+            className={type === 2 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
             style={{ fontFamily: 'Type Machine' }}
           >
             sponsor
@@ -107,7 +108,7 @@ export default function Home() {
         </div>
 
         {/* Grid Layout: Responsive for mobile */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-1">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 place-items-center">
           {loading ? (
             <div>Loading...</div>
           ) : (
@@ -138,8 +139,6 @@ export default function Home() {
           <BusinessCard />
           <BusinessCard />
           <BusinessCard />
-          
-          
         </div>
 
         {/* Pagination Controls */}

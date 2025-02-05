@@ -2,7 +2,8 @@ import Image from "next/image";
 import { FaTwitter, FaTelegramPlane, FaLinkedin, FaEnvelope, FaPhone } from "react-icons/fa";
 
 const BusinessCard = ({ 
-    name = "John Doe", 
+    name = "John Doe",
+    image = null,
     title = "CEO", 
     companyName = "Boring Company", 
     twitter = "#", 
@@ -12,14 +13,14 @@ const BusinessCard = ({
     phone = "+1234567890" 
   }) => {
     return (
-      <div className="flex flex md:flex-row items-center bg-white border shadow-md w-full md:w-64 h-auto md:h-auto font-type-machine mb-4">
+      <div className="flex flex md:flex-row items-center bg-white border-2 border-black shadow-md w-full md:w-full  h-auto md:h-auto font-type-machine mb-4">
         {/* Profile Image */}
         <div className="bg-green-200 w-auto">
           <Image 
-            src="/profile.png" // Replace with actual image path
+            src={image || `/profile.png`} // Replace with actual image path
             alt="Profile"
-            width={70}
-            height={70}
+            width={80}
+            height={80}
             className="md:w-20 md:h-20"
           />
         </div>
@@ -46,8 +47,11 @@ const BusinessCard = ({
             <a href={`tel:${phone}`} aria-label="Phone" className="hover:text-green-500">
               <FaPhone />
             </a>
+            
           </div>
+          
         </div>
+        
       </div>
     );
   };

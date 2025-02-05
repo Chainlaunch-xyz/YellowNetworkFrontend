@@ -13,10 +13,10 @@ const Header = () => {
     "../../public/profile.png";
 
   return (
-    <div className="w-full flex justify-center">
-      <header className="header w-4/5 text-white p-4 flex justify-between items-center">
+    <div className="w-100% flex justify-center">
+      <header className="header w-[70%] text-white p-4 flex justify-center items-center">
         {/* Left side: Site Title with American Typewriter font */}
-        <div className="flex-1 text-center">
+        <div className="flex-1 text-center ml-16">
             <h1 className="font-semibold text-[25px]" style={{ fontFamily: 'American Typewriter' }}>
             YELLOW NETWORK
             </h1>
@@ -27,8 +27,8 @@ const Header = () => {
             
           <div className="flex items-center space-x-2">
             <div className="text-sm text-right" style={{ fontFamily: 'American Typewriter' }}>
-                <p className="">{user?.name || 'John Doe'}</p>
-                <p className="hover:text-gray-400">View Profile</p>
+                <p className="text-xs">{user?.name || 'John Doe'}</p>
+                <p className="text-xs hover:text-gray-400">View Profile</p>
             </div>
             {/* User logo with styles */}
             <div className="w-[34px] h-[34px] overflow-hidden border-2 border-gray-500 ml-[64px]">
