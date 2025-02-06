@@ -1,15 +1,21 @@
 import Link from 'next/link';
 import { SearchIcon } from '@heroicons/react/outline';
-  // Correct import
+import Image from "next/image";
 
 export default function Footer() {
   return (
-    <footer className="footer w-full bg-black text-white py-10">
+    <footer className="footer w-full bg-black text-white p-10 ">
       <div className="w-full mx-auto flex flex-wrap items-start justify-between px-50">
         
         {/* Left Section - Logo & Description (30%) */}
         <div className="w-full md:w-[25%]">
-          <h2 className="text-3xl font-bold">NTWRKMAG</h2>
+          <Image
+            src="/logo.png"
+            alt="Logo"
+            width={80}
+            height={80}
+            className="w-[50%] sm:w-[30%] md:w-[80%] pt-2 h-auto object-contain"
+          />
           <p className="text-gray-400 mt-2 text-sm">
             Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
           </p>
