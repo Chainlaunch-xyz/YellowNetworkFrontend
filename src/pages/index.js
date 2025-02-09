@@ -1,6 +1,7 @@
 import BusinessCard from "@/components/BusinessCard";
 import InviteCard from "@/components/InviteCard";
 import { useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
   const [users, setUsers] = useState([]); // Holds the business card data
@@ -8,12 +9,18 @@ export default function Home() {
   const [totalCount, setTotalCount] = useState(0); // Total number of records from the DB
   const [loading, setLoading] = useState(false); // Loading state
   const [type, setType] = useState(0); // Type of users (people, business, sponsor)
+  const router = useRouter();
 
   const limit = 15; // Number of business cards per page
 
   useEffect(() => {
     // fetchUsers();
   }, [currentPage, type]); // Fetch users when currentPage or type changes
+
+  const handleClick = () => {
+    setType(3);
+    router.push("/map"); // Redirects to /map
+  }
 
   const fetchUsers = async () => {
     setLoading(true);
@@ -104,6 +111,14 @@ export default function Home() {
             style={{ fontFamily: 'Type Machine' }}
           >
             sponsor
+          </button>
+
+          <button
+            onClick={handleClick}
+            className={type === 3 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
+            style={{ fontFamily: 'Type Machine' }}
+          >
+            map
           </button>
         </div>
 

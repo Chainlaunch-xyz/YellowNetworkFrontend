@@ -17,6 +17,8 @@ export default function SignUp() {
   const [profileImage, setProfileImage] = useState(null);
   const [isClient, setIsClient] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
+  const [passportNumber, setPassportNumber] = useState("");
+
 
   // Ensure the component is only mounted on the client
   useEffect(() => {
@@ -25,6 +27,8 @@ export default function SignUp() {
     // Format date only on the client
     const today = new Date();
     const options = { day: "2-digit", month: "short", year: "numeric" };
+    const randomPassportNumber = Math.floor(100000000 + Math.random() * 900000000);
+    setPassportNumber(randomPassportNumber.toString());
     setFormattedDate(today.toLocaleDateString("en-GB", options).toUpperCase());
   }, []);
 
@@ -143,49 +147,59 @@ export default function SignUp() {
 
         {/* Right Section: Passport Preview */}
         <div className="ml-8 relative bg-gray-200 border-4 border-black p-4 md:p-6 shadow-lg flex flex-col ml-4 md:ml-6 overflow-hidden">
-          {/* Passport Details */}
-          <div className="pb-2 flex flex-row-reverse md:flex-row items-start gap-2 md:gap-4 text-xs md:text-sm">
-            {/* Profile Image on Right (Mobile) & Left (Desktop) */}
-            <div className="w-16 h-16 md:w-24 md:h-24 border border-black flex-shrink-0">
-              {profileImage ? (
-                <Image src={profileImage} width={64} height={64} mdWidth={96} mdHeight={96} alt="Uploaded Profile" className="w-full h-full object-cover"/>
-              ) : (
-                <Image src="/profile.png" width={64} height={64} mdWidth={96} mdHeight={96} alt="Default Avatar" className="w-full h-full"/>
-              )}
-            </div>
+  {/* Header Section: PASSPORT and Barcode */}
+  <div className="flex flex-col items-center justify-center mb-2 md:mb-4">
+  <p className="text-lg md:text-2xl font-extrabold">PASSPORT</p>
+  
+  {/* Three items in a single row */}
+  <div className="flex flex-wrap justify-center gap-2 text-xs md:text-sm font-bold mt-1">
+    <p>Type: <span className="font-normal">CITIZEN</span></p>
+    <p>Country: <span className="font-normal">{formData.country}</span></p>
+    <p>Passport No: <span className="font-normal">{passportNumber}</span></p>
+  </div>
+</div>
 
-            {/* Profile Details */}
-            <div className="w-full break-words md:pb-[20%]">
-              <p className="font-bold">Name <span className="font-normal">{formData.name}</span></p>
-              <p className="font-bold">Organization <span className="font-normal">{formData.organization}</span></p>
-              <p className="font-bold">Title <span className="font-normal">{formData.title}</span></p>
-              <p className="font-bold">Location <span className="font-normal">{formData.city}, {formData.country}</span></p>
-              <p className="font-bold">Date issued <span className="font-normal">{formattedDate}</span></p>
-            </div>
-          </div>
+  {/* Passport Details */}
+  <div className="pb-2 flex flex-row-reverse md:flex-row items-start gap-2 md:gap-4 text-xs md:text-sm">
+    {/* Profile Image on Right (Mobile) & Left (Desktop) */}
+    <div className="w-16 h-16 md:w-24 md:h-24 border border-black flex-shrink-0">
+      {profileImage ? (
+        <Image src={profileImage} width={64} height={64} mdWidth={96} mdHeight={96} alt="Uploaded Profile" className="w-full h-full object-cover"/>
+      ) : (
+        <Image src="/profile.png" width={64} height={64} mdWidth={96} mdHeight={96} alt="Default Avatar" className="w-full h-full"/>
+      )}
+    </div>
 
-          {/* 🔹 Passport Code */}
-          <div className=" bg-gray-00 text-xs md:text-sm font-mono break-words border-b-2 border-gray-500 mb-2">
-            C&lt;NTWRKCOMMUNITY&lt;&lt;YELLOW&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
-            <br/>
-            Y000077303NTWRK6502056Y3010149500101920&lt;0020
-          </div>
+    {/* Profile Details */}
+    <div className="w-full break-words md:pb-[10%]">
+      <p className="font-bold">Name <span className="font-normal">{formData.name}</span></p>
+      <p className="font-bold">Organization <span className="font-normal">{formData.organization}</span></p>
+      <p className="font-bold">Title <span className="font-normal">{formData.title}</span></p>
+      <p className="font-bold">Location <span className="font-normal">{formData.city}, {formData.country}</span></p>
+      <p className="font-bold">Date issued <span className="font-normal">{formattedDate}</span></p>
+    </div>
+  </div>
 
-          {/* Middle Fold Line */}
-         
+  {/* 🔹 Passport Code */}
+  <div className="bg-gray-00 text-xs md:text-sm font-mono break-words border-b-2 border-gray-500 mb-2">
+    C&lt;NTWRKCOMMUNITY&lt;&lt;YELLOW&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
+    <br/>
+    Y000077303NTWRK6502056Y3010149500101920&lt;0020
+  </div>
 
-          {/* Stamps Placeholder */}
-          <div className="w-full flex flex-col justify-center items-center min-h-[20vh] mt-2">
-            <p className="text-gray-400 text-xs md:text-sm">Stamps go here*</p>
-          </div>
+  {/* Stamps Placeholder */}
+  <div className="w-full flex flex-col justify-center items-center min-h-[25vh] mt-2">
+    <p className="text-gray-400 text-xs md:text-sm">Stamps go here*</p>
+  </div>
 
-          {/* Watermark */}
-          <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-            <p className="text-[10vh] font-extrabold text-black opacity-10 rotate-[-30deg] select-none">
-              NTWRK
-            </p>
-          </div>
-        </div>
+  {/* Watermark */}
+  <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+    <p className="text-[10vh] font-extrabold text-black opacity-10 rotate-[-30deg] select-none">
+      NTWRK
+    </p>
+  </div>
+</div>
+
       </div>
     </div>
   );

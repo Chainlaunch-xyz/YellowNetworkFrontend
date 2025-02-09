@@ -9,14 +9,14 @@
 @tailwind utilities;
 
 .header {
-  background-color: #f3af19;
+  background-color: rgb(234 179 8 );
   color: black
 }
 
 body {
   font-family: 'Inter', sans-serif;
   color: bl;
-  background-color: #f3af19;
+  background-color:rgb(234 179 8 );
 }
 
 .footer {

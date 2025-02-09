@@ -1,6 +1,7 @@
 import { useState, useEffect } from 'react';
 import Image from 'next/image';
 import useUserProfile from '../hooks/userProfile';
+import Link from 'next/link';
 
 const Header = () => {
   const { user, loading, error } = useUserProfile();
@@ -8,18 +9,15 @@ const Header = () => {
   if (loading) return <div>Loading...</div>;
   if (error) return <div>Error loading user profile</div>;
 
-  // Fallback image URL
-  const fallbackImage =
-    "../../public/profile.png";
 
   return (
     <div className="w-100% flex justify-center">
       <header className="header w-[70%] text-white p-4 flex justify-center items-center">
         {/* Left side: Site Title with American Typewriter font */}
         <div className="flex-1 text-center ml-16">
-            <h1 className="font-semibold text-[25px]" style={{ fontFamily: 'American Typewriter' }}>
+          <Link href="/" className="font-semibold text-[25px]" style={{ fontFamily: "American Typewriter", cursor: "pointer" }}>
             YELLOW NETWORK
-            </h1>
+          </Link>
         </div>
 
         {/* Right side: User Info */}
@@ -27,8 +25,10 @@ const Header = () => {
             
           <div className="flex items-center space-x-2">
             <div className="text-sm text-right" style={{ fontFamily: 'American Typewriter' }}>
-                <p className="text-xs">{user?.name || 'John Doe'}</p>
-                <p className="text-xs hover:text-gray-400">View Profile</p>
+                <p className="text-xs">{user?.name || 'Jericho'}</p>
+                <Link href="/profile" className="text-xs hover:text-gray-400 cursor-pointer">
+                  View Profile
+                </Link>
             </div>
             {/* User logo with styles */}
             <div className="w-[34px] h-[34px] overflow-hidden border-2 border-gray-500 ml-[64px]">
