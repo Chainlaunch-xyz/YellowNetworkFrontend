@@ -1,186 +1,218 @@
-import BusinessCard from "@/components/BusinessCard";
-import InviteCard from "@/components/InviteCard";
-import { useEffect, useState } from "react";
-import { useRouter } from "next/navigation";
+"use client";
+import { useEffect, useRef, useState } from "react";
+import mapboxgl from "mapbox-gl";
+import "mapbox-gl/dist/mapbox-gl.css";
+import Image from "next/image";
+import { useRouter } from "next/router";
 
-export default function Home() {
-  const [users, setUsers] = useState([]); // Holds the business card data
-  const [currentPage, setCurrentPage] = useState(1); // Track the current page
-  const [totalCount, setTotalCount] = useState(0); // Total number of records from the DB
-  const [loading, setLoading] = useState(false); // Loading state
-  const [type, setType] = useState(0); // Type of users (people, business, sponsor)
-  const router = useRouter();
+const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
-  const limit = 15; // Number of business cards per page
+const users = [
+    { id: 1, name: "Alice", coordinates: [77.5946, 12.9716], telegram: "@jericho.xyz", twitter: "@jericho.xyz" }, 
+    { id: 2, name: "Bob", coordinates: [-74.006, 40.7128], telegram: "@jericho.xyz", twitter: "@jericho.xyz" },
+    { id: 3, name: "Charlie", coordinates: [139.6917, 35.6895], telegram: "@jericho.xyz", twitter: "@jericho.xyz" }
+];
 
-  useEffect(() => {
-    // fetchUsers();
-  }, [currentPage, type]); // Fetch users when currentPage or type changes
+const events = [
+    { id: 1, name: "Solana Hackathon", hostName: "Jericho" ,date: "March 10, 2025", location: "New York", link: "/register", image:"/flags/morocco.png" },
+    { id: 2, name: "Crypto Expo", hostName: "Jericho",date: "April 5, 2025", location: "Dubai", link:"/register", image:"/flags/morocco.png"},
+    { id: 3, name: "Blockchain Summit", hostName: "Jericho",date: "May 20, 2025", location: "Singapore", link:"register" , image:"/flags/morocco.png"}
+];
 
-  const handleClick = () => {
-    setType(3);
-    router.push("/map"); // Redirects to /map
-  }
+export default function Map() {
+    const router = useRouter()
+    const mapContainerRef = useRef(null);
+    const [isGlobe, setIsGlobe] = useState(false);
+    const [menuOpen, setMenuOpen] = useState(false);
 
-  const fetchUsers = async () => {
-    setLoading(true);
-
-    try {
-      const offset = (currentPage - 1) * limit; // Calculate the offset
-      const response = await fetch(`/api/businessCards?type=${type}&limit=${limit}&offset=${offset}`);
-      const data = await response.json();
-
-      setUsers(data.cards); // Assuming the response contains a 'cards' key with the data
-      setTotalCount(data.totalCount); // Assuming the response contains the total number of records
-    } catch (error) {
-      console.error("Error fetching business cards:", error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const totalPages = Math.ceil(totalCount / limit); // Calculate total pages based on totalCount
-
-  const handleNextPage = () => {
-    if (currentPage < totalPages) {
-      setCurrentPage(currentPage + 1);
-    }
-  };
-
-  const handlePrevPage = () => {
-    if (currentPage > 1) {
-      setCurrentPage(currentPage - 1);
-    }
-  };
-
-  const handlePageClick = (page) => {
-    setCurrentPage(page);
-  };
-
-  // Render page numbers around the current page
-  const renderPageNumbers = () => {
-    const pages = [];
-    const range = 2; // Number of pages to show before and after currentPage
-
-    // Add previous pages
-    for (let i = Math.max(currentPage - range, 1); i < currentPage; i++) {
-      pages.push(i);
+    function toggleMap() {
+        setIsGlobe((prev) => !prev);
     }
 
-    // Add the current page
-    pages.push(currentPage);
-
-    // Add next pages
-    for (let i = currentPage + 1; i <= Math.min(currentPage + range, totalPages); i++) {
-      pages.push(i);
+    function toggleMenu() {
+        setMenuOpen((prev) => !prev);
+    }
+    
+    function handleConnect(){
+        router.push('/contacts')
     }
 
-    return pages.map((page) => (
-      <button
-        key={page}
-        onClick={() => handlePageClick(page)}
-        className={`px-4 py-2 ${page === currentPage ? 'bg-black text-white' : 'bg-gray-100'}`}
-        style={{ fontFamily: 'American Typewriter' }}
-      >
-        {page}
-      </button>
-    ));
-  };
+    useEffect(() => {
+        if (!mapContainerRef.current) return;
+        let map;
 
-  return (
-    <div className="flex justify-center min-h-screen mb-2">
-      <div className="w-[70%]">
-        <div className="flex justify-center mb-16 text-xs">
-          <button
-            onClick={() => setType(0)}
-            className={type === 0 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            people
-          </button>
-          <button
-            onClick={() => setType(1)}
-            className={type === 1 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            business
-          </button>
-          <button
-            onClick={() => setType(2)}
-            className={type === 2 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            sponsor
-          </button>
+        if (!isGlobe) {
+            mapboxgl.accessToken = MAPBOX_TOKEN;
+            map = new mapboxgl.Map({
+                container: mapContainerRef.current,
+                style: "mapbox://styles/mapbox/dark-v11",
+                center: [0, 0],
+                zoom: 2,
+                projection: "mercator",
+                renderWorldCopies: false,
+            });
+        } else {
+            mapboxgl.accessToken = MAPBOX_TOKEN;
+            map = new mapboxgl.Map({
+                container: mapContainerRef.current,
+                style: "mapbox://styles/mapbox/dark-v11",
+                center: [0, 0],
+                zoom: 2,
+            });
+        }
 
-          <button
-            onClick={handleClick}
-            className={type === 3 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            map
-          </button>
+        map.on("load", () => {
+            map.addSource("user-points", {
+                type: "geojson",
+                data: {
+                    type: "FeatureCollection",
+                    features: users.map((user) => ({
+                        type: "Feature",
+                        properties: { name: user.name, telegram: user.telegram, twitter: user.twitter },
+                        geometry: {
+                            type: "Point",
+                            coordinates: user.coordinates,
+                        },
+                    })),
+                },
+            });
+
+            map.addLayer({
+                id: "user-points-layer",
+                type: "circle",
+                source: "user-points",
+                paint: {
+                    "circle-radius": 5,
+                    "circle-color": "#eab308",
+                    "circle-stroke-width": 1,
+                    "circle-stroke-color": "black",
+                },
+            });
+
+            map.on("click", "user-points-layer", (e) => {
+                const coordinates = e.features[0].geometry.coordinates;
+                const name = e.features[0].properties.name;
+                const twitter = e.features[0].properties.twitter;
+                const telegram = e.features[0].properties.telegram;
+
+                new mapboxgl.Popup({ className: "map-user-popup",closeButton: false, offset: 10 })
+                    .setLngLat(coordinates)
+                    .setHTML(`
+                    <div style="display: flex; align-items: center; background-color: #eab308; 
+                border-radius: 8px; overflow: hidden; margin: 0; padding: 0; width: auto; height: auto;">
+                
+                <img src="./yellow-pfp.jpeg" alt="${name}" width="50" height="50"
+                    style="border-radius: 50%; margin: 0; padding: 0; object-fit: cover; display: block;" />
+                
+                <div style="padding: 8px; margin: 0; text-align: left; line-height: 1.2;">
+                    <b style="font-size: 16px; color: black;">${name}</b>
+                    
+                    <a href="https://twitter.com/${twitter}" target="_blank" 
+                        style="display: flex; align-items: center; text-decoration: none; color: black; margin-top: 4px;">
+                        <img src="/X_logo.jpg" alt="Twitter" width="16" height="16" 
+                            style="margin-right: 5px; object-fit: contain;" />
+                        ${twitter}
+                    </a>
+                    
+                    <a href="https://t.me/${telegram}" target="_blank" 
+                        style="display: flex; align-items: center; text-decoration: none; color: black; margin-top: 4px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/8/82/Telegram_logo.svg"
+                            alt="Telegram" width="16" height="16" style="margin-right: 5px; object-fit: contain;" />
+                        ${telegram}
+                    </a>
+                </div>
+            </div>
+                    `)
+                    .addTo(map);
+            });
+
+            map.on("mouseenter", "user-points-layer", () => {
+                map.getCanvas().style.cursor = "pointer";
+            });
+
+            map.on("mouseleave", "user-points-layer", () => {
+                map.getCanvas().style.cursor = "";
+            });
+        });
+    }, [isGlobe]);
+
+    return (
+        <div className="relative h-screen w-full" style={{ fontFamily: 'American Typewriter' }}>
+            {/* 🌍 Toggle Globe Button */}
+            <button
+                className="absolute top-4 right-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
+                onClick={toggleMap}
+            >
+                <img src="/globe.png" alt="Globe Icon" className="w-6 h-6" />
+            </button>
+
+            {/* 📅 Open Events Menu Button */}
+            <button
+                className="absolute top-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
+                onClick={toggleMenu}
+            >
+                📅 Events
+            </button>
+
+            <button
+                className="fixed bottom-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-[9999]"
+                onClick={handleConnect}
+            >
+                🔍 Contacts
+            </button>
+
+            {/* 📜 Side Menu Drawer */}
+            <div
+                className={`absolute top-0 left-0 h-full w-64 bg-yellow-600 shadow-lg transition-transform duration-300 ${
+                    menuOpen ? "translate-x-0" : "-translate-x-full"
+                } z-50`}
+            >
+                {/* ❌ Close Button */}
+                <button
+                    className="absolute top-4 right-4 text-black text-lg"
+                    onClick={toggleMenu}
+                >
+                    ✖
+                </button>
+
+                {/* 📅 Event Details (Scrollable) */}
+                <div className="p-6 mt-12 h-[calc(100vh-80px)] overflow-y-auto">
+                    <h2 className="text-black text-xl font-bold mb-4">Events</h2>
+                    <ul>
+                        {events.map((event) => (
+                            <li key={event.id} className="mb-4 p-4 bg-yellow-400 shadow flex items-center justify-between">
+                                {/* 📜 Event Details (Left Side) */}
+                                <div className="flex-1 pr-4">
+                                    <h3 className="text-black font-semibold text-lg">{event.name}</h3>
+                                    <p className="text-black text-sm">{event.hostName}</p>
+                                    <p className="text-black text-sm">{event.date}</p>
+                                    <p className="text-black text-sm">{event.location}</p>
+                                    <div className="w-full flex justify-start mt-2">
+                                        <button className="bg-white text-black px-4 py-2 border border-black shadow-md hover:bg-gray-100 transition">
+                                            Register
+                                        </button>
+                                    </div>
+                                </div>
+
+                                {/* 🌍 Event Image (Right Side) */}
+                                <div className="w-20 flex-shrink-0 p-2">
+                                    <Image 
+                                        src={event.image || `/profile.png`}
+                                        alt="Event"
+                                        width={80}
+                                        height={80}
+                                        className="md:h-20"
+                                    />
+                                </div>
+                            </li>
+                        ))}
+                    </ul>
+                </div>
+
+            </div>
+
+            {/* 🌍 Map Container */}
+            <div ref={mapContainerRef} className="h-full w-full" />
         </div>
-
-        {/* Grid Layout: Responsive for mobile */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 place-items-center">
-          {loading ? (
-            <div>Loading...</div>
-          ) : (
-            users.map((user) => (
-              <BusinessCard
-                key={user.id} // Assuming each user has a unique 'id'
-                name={user.name}
-                title={user.title}
-                companyName={user.companyName}
-                twitter={user.twitter}
-                telegram={user.telegram}
-                linkedIn={user.linkedIn}
-                email={user.email}
-                phone={user.phone}
-              />
-            ))
-          )}
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-          <BusinessCard />
-        </div>
-
-        {/* Pagination Controls */}
-        <div className="flex justify-between mt-4 items-center text-xs">
-          <button
-            onClick={handlePrevPage}
-            disabled={currentPage === 1}
-            className="px-4 py-2 bg-gray-200"
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            {`< Back`}
-          </button>
-
-          <div className="flex space-x-2">
-            {renderPageNumbers()}
-          </div>
-
-          <button
-            onClick={handleNextPage}
-            disabled={currentPage === totalPages}
-            className="px-4 py-2 bg-gray-200"
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            {`Next >`}
-          </button>
-        </div>
-      </div>
-    </div>
-  );
+    );
 }

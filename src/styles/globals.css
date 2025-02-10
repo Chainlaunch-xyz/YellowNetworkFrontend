@@ -57,3 +57,33 @@ body {
 .font-meditative {
   font-family: "Meditative", sans-serif;
 }
+
+
+.map-user-popup .mapboxgl-popup-content{
+  background-color: #f3af19;
+}
+
+.map-user-popup .mapboxgl-popup-tip {
+  border-top-color: #f3af19;
+}
+
+.mapboxgl-popup-content-wrapper {
+  border-top-color: #f3af19;
+}
+
+.mapboxgl-popup-anchor-top > .mapboxgl-popup-tip {
+  border-bottom-color: #f3af19 !important; /* Makes the triangle yellow */
+}
+
+
+.mapboxgl-popup-anchor-bottom > .mapboxgl-popup-tip {
+  border-top-color: #f3af19 !important;
+}
+
+.mapboxgl-popup-anchor-left > .mapboxgl-popup-tip {
+  border-right-color: #f3af19 !important;
+}
+
+.mapboxgl-popup-anchor-right > .mapboxgl-popup-tip {
+  border-left-color: #f3af19 !important;
+}

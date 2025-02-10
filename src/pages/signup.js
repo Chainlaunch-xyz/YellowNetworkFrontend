@@ -22,12 +22,42 @@ export default function SignUp() {
   const [formattedDate, setFormattedDate] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
   const [isStamped, setIsStamped] = useState(false);
+  const [telegramUser, setTelegramUser] = useState(null);
+
+  const BOT_USERNAME = process.env.NEXT_PUBLIC_TELEGRAM_BOT_ID;
+ 
 
 
+  useEffect(() => {
+    window.TelegramLoginWidget = {
+      dataOnauth: async (userData) => {
+        console.log("Telegram User Data:", userData);
+        setTelegramUser(userData);
+
+        const response = await fetch("/api/telegram-auth", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify(userData),
+        });
+
+        const result = await response.json();
+        if (result.success) {
+          alert("Telegram authentication successful!");
+          router.push("/recommend");
+        } else {
+          alert("Authentication failed: " + result.message);
+        }
+      },
+    };
+  }, []);
   // Ensure the component is only mounted on the client
   useEffect(() => {
     setIsClient(true);
-
+    if (window.Telegram && window.Telegram.Login) {
+      console.log('Telegram widget is initialized');
+    } else {
+      console.error('Telegram widget is not initialized');
+    }
     // Format date only on the client
     const today = new Date();
     const options = { day: "2-digit", month: "short", year: "numeric" };
@@ -37,6 +67,12 @@ export default function SignUp() {
   }, []);
 
   const { publicKey, signMessage, connected } = useWallet();
+
+  const handleTelegramLogin = () => { 
+    const AUTH_URL = `https://oauth.telegram.org/auth?bot_id=${BOT_USERNAME}&origin=${window.location.origin}`;
+
+    window.open(AUTH_URL, "_blank", "width=600,height=700");
+  };
 
   // Handle text input changes
   const handleChange = (e) => {
@@ -62,6 +98,10 @@ export default function SignUp() {
       const imageUrl = URL.createObjectURL(file);
       setProfileImage(imageUrl);
     }
+  };
+
+  const handleTelegramClick = () => {
+    console.log('Telegram button clicked');
   };
 
   // Wallet Verification
@@ -153,6 +193,20 @@ export default function SignUp() {
           <button onClick={handleSubmit} className="mt-6 w-full bg-black text-white py-2 md:py-3 flex items-center justify-between px-4 md:px-6 text-xs md:text-sm">
             <span>SUBMIT</span> <span>→</span>
           </button>
+
+          <div className="flex items-center my-4">
+            <hr className="flex-grow border-t border-gray-800" />
+            <span className="px-3 text-gray-800 text-sm">or</span>
+            <hr className="flex-grow border-t border-gray-800" />
+          </div>
+          <div className="flex justify-center">
+            <button
+              onClick={handleTelegramLogin}
+              className="bg-blue-600 text-white px-6 py-2 rounded-md hover:bg-blue-700 transition"
+            >
+              Login with Telegram
+            </button>
+          </div>
         </div>
 
         {/* 🔹 Vertical Separator Line */}
@@ -194,7 +248,7 @@ export default function SignUp() {
   </div>
 
   {/* 🔹 Passport Code */}
-  <div className="bg-gray-00 text-xs md:text-sm font-mono break-words border-b-2 border-gray-500 mb-2">
+  <div className="bg-gray-00 text-xs md:text-sm font-mono break-words border-b-2 border-gray-500 pb-8 mb-2">
     C&lt;NTWRKCOMMUNITY&lt;&lt;YELLOW&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;&lt;
     <br/>
     Y000077303NTWRK6502056Y3010149500101920&lt;0020
