@@ -46,3 +46,14 @@ body {
   color: #333;
   border: none;
 }
+
+@font-face {
+  font-family: 'Meditative';
+  src: url('/fonts/Meditative.ttf') format('truetype'); /* Update path if needed */
+  font-weight: normal;
+  font-style: normal;
+}
+
+.font-meditative {
+  font-family: "Meditative", sans-serif;
+}

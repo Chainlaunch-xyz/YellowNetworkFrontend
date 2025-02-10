@@ -9,6 +9,8 @@ export default {
     extend: {
       fontFamily: {
         inter: ["Inter", "sans-serif"],
+        montserrat: ["Montserrat", "sans-serif"],
+        meditative: ['Meditative', 'sans-serif'],
       },
       colors: {
         background: "var(--background)",

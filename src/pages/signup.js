@@ -3,8 +3,11 @@ import Image from "next/image";
 import { useState, useEffect } from "react";
 import { useWallet } from "@solana/wallet-adapter-react";
 import { WalletMultiButton } from "@solana/wallet-adapter-react-ui";
+import { motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 
 export default function SignUp() {
+  const router = useRouter()
   const [formData, setFormData] = useState({
     name: "JERICHO",
     organization: "NTWRK MEDIA",
@@ -18,6 +21,7 @@ export default function SignUp() {
   const [isClient, setIsClient] = useState(false);
   const [formattedDate, setFormattedDate] = useState("");
   const [passportNumber, setPassportNumber] = useState("");
+  const [isStamped, setIsStamped] = useState(false);
 
 
   // Ensure the component is only mounted on the client
@@ -42,6 +46,14 @@ export default function SignUp() {
       [name]: value,
     }));
   };
+
+  const handleSubmit = () => {
+    setIsStamped(true); // Show stamp animation
+    setTimeout(() => {
+      router.push("/recommend"); // Redirect after 3 seconds
+    }, 2000);
+  };
+
 
   // Handle image upload
   const handleImageUpload = (event) => {
@@ -69,6 +81,7 @@ export default function SignUp() {
       alert("Signature verification failed. Please try again.");
     }
   };
+  
 
   // Prevent rendering on the server
   if (!isClient) return null;
@@ -137,7 +150,7 @@ export default function SignUp() {
           )}
 
           {/* Submit Button */}
-          <button className="mt-6 w-full bg-black text-white py-2 md:py-3 flex items-center justify-between px-4 md:px-6 text-xs md:text-sm">
+          <button onClick={handleSubmit} className="mt-6 w-full bg-black text-white py-2 md:py-3 flex items-center justify-between px-4 md:px-6 text-xs md:text-sm">
             <span>SUBMIT</span> <span>→</span>
           </button>
         </div>
@@ -188,13 +201,30 @@ export default function SignUp() {
   </div>
 
   {/* Stamps Placeholder */}
-  <div className="w-full flex flex-col justify-center items-center min-h-[25vh] mt-2">
-    <p className="text-gray-400 text-xs md:text-sm">Stamps go here*</p>
-  </div>
+      <div className="w-full flex flex-col justify-center items-center min-h-[25vh] mt-2">
+        <p className="text-gray-400 text-xs md:text-sm">Stamps go here*</p>
+      </div>
+      {isStamped && (
+                <motion.div
+                initial={{ scale: 0, rotate: -30, opacity: 0 }}
+                animate={{ scale: 1.2, rotate: 0, opacity: 1 }}
+                exit={{ scale: 0, rotate: 30, opacity: 0 }}
+                transition={{ duration: 0.5, ease: "backOut" }}
+                className="absolute bottom-10 right-10 md:bottom-16 md:right-16"
+              >
+                <Image 
+                  src="/issued.png" // Replace with actual path
+                  alt="Approved Stamp"
+                  width={150} // Adjust size
+                  height={150} 
+                  className="opacity-80"
+                />
+              </motion.div>
+              )}
 
   {/* Watermark */}
-  <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
-    <p className="text-[10vh] font-extrabold text-black opacity-10 rotate-[-30deg] select-none">
+      <div className="absolute inset-0 flex justify-center items-center pointer-events-none">
+      <p className="text-[10vh] font-extrabold text-black opacity-10 rotate-[-30deg] select-none">
       NTWRK
     </p>
   </div>
