@@ -3,14 +3,13 @@ import Image from "next/image";
 
 export default function ProfilePage() {
   return (
-    <div className="relative bg-yellow-500 min-h-screen flex flex-col items-center p-6" style={{ fontFamily: "American Typewriter" }}>
+    <div className="relative bg-yellow-500 flex flex-col items-center" style={{ fontFamily: "American Typewriter" }}>
       
       {/* 🔹 Content Wrapper */}
-      <div className="relative flex bg-gray-200 p-2 flex-col w-full max-w-[90vh] flex-1">
+      <div className="relative flex bg-gray-200 p-2 flex-col w-full max-w-[90vh] max-h-[90vh] overflow-y-auto flex-1">
         
         {/* 🔹 Passport Section (Top) */}
         <div className="relative bg-gray-300 w-full shadow-lg border-4 border-yellow-600 p-6 flex flex-col min-h-[50vh] z-10 overflow-hidden">
-          
           {/* 🔹 Watermark (Inside the Wrapper) */}
           <div className="absolute inset-0 flex justify-end items-center pointer-events-none z-0 ml-[25%]">
             <p className="text-[7vh] font-extrabold text-black opacity-10 rotate-[-30deg] select-none">

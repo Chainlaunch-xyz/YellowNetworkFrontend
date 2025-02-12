@@ -140,7 +140,7 @@ export default function Map() {
         <div className="relative h-screen w-full" style={{ fontFamily: 'American Typewriter' }}>
             {/* 🌍 Toggle Globe Button */}
             <button
-                className="absolute top-4 right-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
+                className="absolute top-4 right-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-40"
                 onClick={toggleMap}
             >
                 <img src="/globe.png" alt="Globe Icon" className="w-6 h-6" />
@@ -148,14 +148,14 @@ export default function Map() {
 
             {/* 📅 Open Events Menu Button */}
             <button
-                className="absolute top-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
+                className="absolute top-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-40"
                 onClick={toggleMenu}
             >
                 📅 Events
             </button>
 
             <button
-                className="fixed bottom-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-[9999]"
+                className="fixed bottom-4 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-40"
                 onClick={handleConnect}
             >
                 🔍 Contacts

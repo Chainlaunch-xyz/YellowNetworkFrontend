@@ -17,6 +17,7 @@ body {
   font-family: 'Inter', sans-serif;
   color: bl;
   background-color:rgb(234 179 8 );
+  overflow: hidden;
 }
 
 .footer {
