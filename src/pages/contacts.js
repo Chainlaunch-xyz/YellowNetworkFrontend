@@ -94,51 +94,62 @@ export default function Home() {
     <div className="h-screen overflow-y-auto">
     <div className="flex justify-center min-h-screen mb-2">
       <div className="w-[70%]">
-      <div className="text-center text-black text-lg mb-4" style={{ fontFamily: "American Typewriter" }}>
-        Filter:{" "}
-        {letters.map((letter) => (
-          <span
-            key={letter}
-            className={`cursor-pointer mx-1 ${
-              selectedLetter === letter ? "font-bold text-black" : "text-gray-700"
-            }`}
-            onClick={() => setSelectedLetter(letter)}
-          >
-            {letter}
-          </span>
-        ))}
-      </div>
-        <div className="flex justify-center mb-16 text-xs">
-          <button
-            onClick={() => setType(0)}
-            className={type === 0 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            people
-          </button>
-          <button
-            onClick={() => setType(1)}
-            className={type === 1 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            business
-          </button>
-          <button
-            onClick={() => setType(2)}
-            className={type === 2 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            sponsor
-          </button>
+      <div className="text-center text-black text-lg mb-4 mt-2" style={{ fontFamily: "American Typewriter" }}>
+  <div className="flex flex-wrap justify-center">
+    {letters.map((letter) => (
+      <span
+        key={letter}
+        className={`cursor-pointer px-2 ${
+          selectedLetter === letter ? "font-bold text-black" : "text-gray-700"
+        }`}
+        onClick={() => setSelectedLetter(letter)}
+      >
+        {letter}
+      </span>
+    ))}
+  </div>
+</div>
 
-          <button
-            onClick={handleClick}
-            className={type === 3 ? "px-auto py-2 bg-black text-white mr-8 w-[15%]" : "px-auto py-2 text-gray-500 bg-gray-100 mr-8 w-[15%]"}
-            style={{ fontFamily: 'Type Machine' }}
-          >
-            map
-          </button>
-        </div>
+        
+      <div className="flex flex-wrap justify-center gap-2 sm:gap-8 mb-16 text-xs">
+  <button
+    onClick={() => setType(0)}
+    className={`py-2 px-4 ${
+      type === 0 ? "bg-black text-white" : "text-gray-500 bg-gray-100"
+    } w-full sm:w-auto text-center`}
+    style={{ fontFamily: "Type Machine" }}
+  >
+    people
+  </button>
+  <button
+    onClick={() => setType(1)}
+    className={`py-2 px-4 ${
+      type === 1 ? "bg-black text-white" : "text-gray-500 bg-gray-100"
+    } w-full sm:w-auto text-center`}
+    style={{ fontFamily: "Type Machine" }}
+  >
+    business
+  </button>
+  <button
+    onClick={() => setType(2)}
+    className={`py-2 px-4 ${
+      type === 2 ? "bg-black text-white" : "text-gray-500 bg-gray-100"
+    } w-full sm:w-auto text-center`}
+    style={{ fontFamily: "Type Machine" }}
+  >
+    sponsor
+  </button>
+  <button
+    onClick={handleClick}
+    className={`py-2 px-4 ${
+      type === 3 ? "bg-black text-white" : "text-gray-500 bg-gray-100"
+    } w-full sm:w-auto text-center`}
+    style={{ fontFamily: "Type Machine" }}
+  >
+    map
+  </button>
+</div>
+
 
         {/* Grid Layout: Responsive for mobile */}
         <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4 place-items-center">
