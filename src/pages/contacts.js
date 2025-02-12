@@ -10,6 +10,9 @@ export default function Home() {
   const [loading, setLoading] = useState(false); // Loading state
   const [type, setType] = useState(0); // Type of users (people, business, sponsor)
   const router = useRouter();
+  const [selectedLetter, setSelectedLetter] = useState(null);
+
+  const letters = "ABCDEFGHIJKLMNOPQRSTUVWXYZ".split("");
 
   const limit = 15; // Number of business cards per page
 
@@ -88,8 +91,23 @@ export default function Home() {
   };
 
   return (
+    <div className="h-screen overflow-y-auto">
     <div className="flex justify-center min-h-screen mb-2">
       <div className="w-[70%]">
+      <div className="text-center text-black text-lg mb-4" style={{ fontFamily: "American Typewriter" }}>
+        Filter:{" "}
+        {letters.map((letter) => (
+          <span
+            key={letter}
+            className={`cursor-pointer mx-1 ${
+              selectedLetter === letter ? "font-bold text-black" : "text-gray-700"
+            }`}
+            onClick={() => setSelectedLetter(letter)}
+          >
+            {letter}
+          </span>
+        ))}
+      </div>
         <div className="flex justify-center mb-16 text-xs">
           <button
             onClick={() => setType(0)}
@@ -181,6 +199,7 @@ export default function Home() {
           </button>
         </div>
       </div>
+    </div>
     </div>
   );
 }
