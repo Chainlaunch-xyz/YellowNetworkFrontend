@@ -1,13 +1,17 @@
 import Link from 'next/link';
+import { useRouter } from 'next/router';
 import { SearchIcon } from '@heroicons/react/outline';
 import Image from "next/image";
 
 export default function Footer() {
+  const router = useRouter();
+  const isHomePage = router.pathname === '/';
+
   return (
     <footer className="footer w-full bg-black text-white p-10 ">
       <div className="w-full mx-auto flex flex-wrap items-start justify-between px-50">
         
-        {/* Left Section - Logo & Description (30%) */}
+        {/* Left Section - Logo & Description (25%) */}
         <div className="w-full md:w-[25%]">
           <Image
             src="/logo.png"
@@ -21,7 +25,7 @@ export default function Footer() {
           </p>
         </div>
 
-        {/* Center Section - Links (40%) */}
+        {/* Center Section - Links (45%) */}
         <div className="w-full md:w-[45%] grid grid-cols-2 md:grid-cols-4 gap-6">
           
           {/* Company */}
@@ -66,17 +70,17 @@ export default function Footer() {
           </div>
         </div>
 
-        {/* Right Section - Search Bar (30%) */}
-        <div className="w-full md:w-[25%] flex justify-end relative">
-          <input 
-            type="text" 
-            placeholder="Search Network..." 
-            className="w-full md:w-90 px-4 py-2 rounded-md text-black border-none outline-none pl-10" // Add padding for the icon
-          />
-          {/* <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" /> Add Search icon */}
-          <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
-
-        </div>
+        {/* Right Section - Search Bar (25%) */}
+        {!isHomePage && (
+          <div className="w-full md:w-[25%] flex justify-end relative">
+            <input 
+              type="text" 
+              placeholder="Search Network..." 
+              className="w-full md:w-90 px-4 py-2 rounded-md text-black border-none outline-none pl-10"
+            />
+            <SearchIcon className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 w-5 h-5" />
+          </div>
+        )}
 
       </div>
     </footer>

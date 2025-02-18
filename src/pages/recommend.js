@@ -40,14 +40,14 @@ export default function RecommendPage() {
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-yellow-500 p-6" style={{ fontFamily: "American Typewriter"}}>
-      <div className="text-center w-full max-w-3xl relative">
+      <div className="text-center w-full max-w-3xl relative flex flex-col items-center">
         {/* Early Access Label - Positioned on Top */}
-        <div className="absolute top-[-12px] left-[-30px] rotate-[-30deg] bg-black text-yellow-400 px-4 py-1 text-sm font-bold z-10">
+        <div className="absolute top-[-12px] left-[24px] transform -translate-x-1/2 rotate-[-30deg] bg-black text-yellow-400 px-4 py-1 text-sm font-bold z-10">
           Early Access
         </div>
 
         {/* Title Box - Placed Under Early Access */}
-        <h1 className="text-2xl md:text-5xl  bg-white inline-block px-6 py-2 border-2 border-black">
+        <h1 className="text-2xl md:text-5xl bg-white inline-block px-6 w-full py-2 border-2 border-black" style={{ fontFamily: "Montserrat" }}>
           Invite your network on <span className="font-meditative font-extrabold">NTWRK</span>
         </h1>
 
