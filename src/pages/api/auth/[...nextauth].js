@@ -23,7 +23,15 @@ export default NextAuth({
       async authorize(credentials) {
         console.log("Entering authorize");
         const { id, first_name, last_name, username, auth_date, hash, photo_url, organization, title, country, city } = credentials;
-        
+        let user;
+        try{
+            const resp = await fetch(`http://localhost:3000/api/users/${username}`, {
+                method: 'GET',
+              })
+              user = await resp.json();
+        }catch(e){
+            console.log("error fetching user: " ,e)
+        }
         // const BOT_TOKEN = process.env.TELEGRAM_BOT_TOKEN;
         // console.log("BOT_TOKEN:", BOT_TOKEN);
 
@@ -63,18 +71,16 @@ export default NextAuth({
       //     console.error("Telegram hash verification failed");
       //     return null;
       //   }
-      console.log( id, first_name, last_name, title, organization, "user")
         return {
           id: id,
-          first_name: first_name,
-          last_name: last_name || null,
-          name: username || first_name,
+          first_name: first_name || user.name,
+          name: username || first_name || user.name,
           telegramId: id,
           photo_url: photo_url || null,
-          organization: organization || null, // Include extra fields
-          title: title || null,
-          country: country || null,
-          city: city || null,
+          organization: organization || user.organization || null, // Include extra fields
+          title: title || user.title|| null,
+          country: country || user.country ||null,
+          city: city || user.city || null,
         };
       },
     }),
@@ -85,7 +91,6 @@ export default NextAuth({
       session.user.photo_url = token.photo_url;
       session.user.username = token.username;
       session.user.first_name = token.first_name;
-      session.user.last_name = token.last_name;
       session.user.organization = token.organization; // Pass extra fields
       session.user.title = token.title;
       session.user.country = token.country;
@@ -98,7 +103,6 @@ export default NextAuth({
         token.photo_url = user.photo_url;
         token.username = user.name;
         token.first_name = user.first_name;
-        token.last_name = user.last_name;
         token.organization = user.organization; // Store extra fields
         token.title = user.title;
         token.country = user.country;
