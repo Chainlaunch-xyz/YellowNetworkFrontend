@@ -2,12 +2,28 @@
 import { useEffect, useState } from "react";
 import { motion } from "framer-motion";
 import { FiCopy, FiUserPlus, FiMail } from "react-icons/fi";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 export default function RecommendPage() {
-  const [inviteLink] = useState("https://ntwrk.com/jericho983");
+  const router = useRouter();
+  const { data: session, status } = useSession();
+  const [inviteLink, setInviteLink] = useState("https://ntwrk.com/jericho983"); // Default link
   const [email, setEmail] = useState("");
   const [copied, setCopied] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+
+  // Set invite link based on session data
+  useEffect(() => {
+    if (status === "authenticated" && session?.user) {
+      const userName = session.user.username || session.user.name || "jericho983"; // Fallback to "jericho983"
+      setInviteLink(`https://ntwrk.com/${userName.toLowerCase().replace(/\s+/g, "")}`);
+    }
+    // Simulate loading animation
+    setTimeout(() => {
+      setIsLoading(false);
+    }, 3000); // Animation duration (3 seconds)
+  }, [status, session]);
 
   const copyToClipboard = () => {
     navigator.clipboard.writeText(inviteLink);
@@ -15,13 +31,7 @@ export default function RecommendPage() {
     setTimeout(() => setCopied(false), 2000);
   };
 
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 3000); // Animation duration (3 seconds)
-  }, []);
-
-  if (isLoading) {
+  if (status === "loading" || isLoading) {
     return (
       <div className="flex items-center justify-center h-screen bg-black">
         <motion.div
@@ -30,7 +40,7 @@ export default function RecommendPage() {
           exit={{ opacity: 0, scale: 0.5 }}
           transition={{ duration: 1.5, ease: "easeInOut" }}
         >
-           <h1 className="text-yellow-500 text-4xl md:text-6xl lg:text-8xl font-bold font-meditative">
+          <h1 className="text-yellow-500 text-4xl md:text-6xl lg:text-8xl font-bold font-meditative">
             NTWRK
           </h1>
         </motion.div>
@@ -38,8 +48,13 @@ export default function RecommendPage() {
     );
   }
 
+  if (status === "unauthenticated") {
+    // Optionally redirect to /signup if not authenticated
+    return null; // Or render a minimal version without user-specific data
+  }
+
   return (
-    <div className="min-h-screen flex items-center justify-center bg-yellow-500 p-6" style={{ fontFamily: "American Typewriter"}}>
+    <div className="min-h-screen flex items-center justify-center bg-yellow-500 p-6" style={{ fontFamily: "American Typewriter" }}>
       <div className="text-center w-full max-w-3xl relative flex flex-col items-center">
         {/* Early Access Label - Positioned on Top */}
         <div className="absolute top-[-12px] left-[24px] transform -translate-x-1/2 rotate-[-30deg] bg-black text-yellow-400 px-4 py-1 text-sm font-bold z-10">
@@ -77,8 +92,15 @@ export default function RecommendPage() {
               </button>
             )}
           </div>
+          <div className="flex items-center justify-center w-full max-w-lg border border-black px-2 py-3 bg-black text-yellow-400">
+            <button onClick={() => router.push("/")}  className="ml-3 p-1 text-center w-full flex justify-center">
+              YELLOW NETWORK
+            </button>
+          </div>
         </div>
       </div>
     </div>
   );
 }
+
+

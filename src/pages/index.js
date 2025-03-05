@@ -4,24 +4,24 @@ import mapboxgl from "mapbox-gl";
 import "mapbox-gl/dist/mapbox-gl.css";
 import Image from "next/image";
 import { useRouter } from "next/router";
-import { SearchIcon, CalendarIcon  } from '@heroicons/react/outline';
+import { SearchIcon, CalendarIcon } from "@heroicons/react/outline";
 
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_ACCESS_TOKEN;
 
 const users = [
-    { id: 1, name: "Alice", coordinates: [77.5946, 12.9716], telegram: "@jericho.xyz", twitter: "@jericho.xyz" }, 
+    { id: 1, name: "Alice", coordinates: [77.5946, 12.9716], telegram: "@jericho.xyz", twitter: "@jericho.xyz" },
     { id: 2, name: "Bob", coordinates: [-74.006, 40.7128], telegram: "@jericho.xyz", twitter: "@jericho.xyz" },
-    { id: 3, name: "Charlie", coordinates: [139.6917, 35.6895], telegram: "@jericho.xyz", twitter: "@jericho.xyz" }
+    { id: 3, name: "Charlie", coordinates: [139.6917, 35.6895], telegram: "@jericho.xyz", twitter: "@jericho.xyz" },
 ];
 
 const events = [
-    { id: 1, name: "Solana Hackathon", hostName: "Jericho" ,date: "March 10, 2025", location: "New York", link: "/register", image:"/flags/morocco.png" },
-    { id: 2, name: "Crypto Expo", hostName: "Jericho",date: "April 5, 2025", location: "Dubai", link:"/register", image:"/flags/morocco.png"},
-    { id: 3, name: "Blockchain Summit", hostName: "Jericho",date: "May 20, 2025", location: "Singapore", link:"register" , image:"/flags/morocco.png"}
+    { id: 1, name: "Solana Hackathon", hostName: "Jericho", date: "March 10, 2025", location: "New York", link: "/register", image: "/flags/morocco.png" },
+    { id: 2, name: "Crypto Expo", hostName: "Jericho", date: "April 5, 2025", location: "Dubai", link: "/register", image: "/flags/morocco.png" },
+    { id: 3, name: "Blockchain Summit", hostName: "Jericho", date: "May 20, 2025", location: "Singapore", link: "register", image: "/flags/morocco.png" },
 ];
 
 export default function Map() {
-    const router = useRouter()
+    const router = useRouter();
     const mapContainerRef = useRef(null);
     const [isGlobe, setIsGlobe] = useState(false);
     const [menuOpen, setMenuOpen] = useState(false);
@@ -31,11 +31,12 @@ export default function Map() {
     }
 
     function toggleMenu() {
+        console.log("Toggling menu, current state:", menuOpen); // Debug log
         setMenuOpen((prev) => !prev);
     }
-    
-    function handleConnect(){
-        router.push('/contacts')
+
+    function handleConnect() {
+        router.push("/contacts");
     }
 
     useEffect(() => {
@@ -96,7 +97,7 @@ export default function Map() {
                 const twitter = e.features[0].properties.twitter;
                 const telegram = e.features[0].properties.telegram;
 
-                new mapboxgl.Popup({ className: "map-user-popup",closeButton: false, offset: 10 })
+                new mapboxgl.Popup({ className: "map-user-popup", closeButton: false, offset: 10 })
                     .setLngLat(coordinates)
                     .setHTML(`
                     <div style="display: flex; align-items: center; background-color: #eab308; 
@@ -138,10 +139,10 @@ export default function Map() {
     }, [isGlobe]);
 
     return (
-        <div className="fixed inset-0 h-screen w-screen overflow-hidden" style={{ fontFamily: 'American Typewriter' }}>
+        <div className="fixed inset-0 h-screen w-screen overflow-hidden" style={{ fontFamily: "American Typewriter" }}>
             {/* 🌍 Toggle Globe Button */}
             <button
-                className="absolute top-20 right-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-40"
+                className="absolute top-20 right-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
                 onClick={toggleMap}
             >
                 <img src="/globe.png" alt="Globe Icon" className="w-6 h-6" />
@@ -149,14 +150,14 @@ export default function Map() {
 
             {/* 📅 Open Events Menu Button */}
             <button
-                className="absolute top-20 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-40"
+                className="absolute top-20 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
                 onClick={toggleMenu}
             >
-               <CalendarIcon className="w-6 h-"/>
+                <CalendarIcon className="w-6 h-6" />
             </button>
 
             <button
-                className="fixed bottom-8 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-40"
+                className="fixed bottom-8 left-4 bg-yellow-500 text-black px-4 py-2 rounded-md shadow-md hover:bg-yellow-600 transition z-50"
                 onClick={handleConnect}
             >
                 <SearchIcon className="w-6 h-6" />
@@ -164,28 +165,34 @@ export default function Map() {
 
             {/* 📜 Side Menu Drawer */}
             <div
-                className={`absolute top-0 left-0 h-full w-64 bg-yellow-600 shadow-lg transition-transform duration-300 ${
+                className={`absolute top-0 left-0 h-full w-3/4 md:w-[24%] lg:w-[24%] bg-yellow-600 shadow-lg transition-transform duration-300 ${
                     menuOpen ? "translate-x-0" : "-translate-x-full"
-                } z-[50]`}
+                } z-[60]`} // Responsive width: 75% on mobile, 384px on md+
             >
                 {/* ❌ Close Button */}
                 <button
-                    className="absolute top-4 right-4 text-black text-lg"
-                    onClick={toggleMenu}
+                    className="absolute top-4 right-4 text-black text-lg z-[70]"
+                    onClick={(e) => {
+                        e.stopPropagation(); // Prevent event bubbling
+                        toggleMenu();
+                    }}
                 >
                     ✖
                 </button>
 
                 {/* 📅 Event Details (Scrollable) */}
                 <div className="p-6 mt-12 h-[calc(100vh-80px)] overflow-y-auto">
-                    <h2 className="text-black text-xl font-bold mb-4 flex-grow ">Events</h2>
+                    <h2 className="text-black text-xl font-bold mb-4">Events</h2>
                     <ul>
                         {events.map((event) => (
-                            <li key={event.id} className="mb-4 p-4 bg-yellow-400 shadow flex flex-grow items-center justify-between">
-                                {/* 📜 Event Details (Left Side) */}
-                                <div className="flex-1 pr-4 4">
+                            <li
+                                key={event.id}
+                                className="mb-4 p-4 bg-yellow-400 shadow flex flex-col md:flex-row items-center justify-between border rounded-lg" // Stack on mobile, row on md+
+                            >
+                                {/* 📜 Event Details */}
+                                <div className="flex-1 pr-0 md:pr-4 mb-4 md:mb-0"> {/* No padding-right on mobile */}
                                     <h3 className="text-black font-semibold text-lg">{event.name}</h3>
-                                    <p className="text-black text-sm">{event.hostName}</p>
+                                    <p className="text-black text-sm">Host: {event.hostName}</p>
                                     <p className="text-black text-sm">{event.date}</p>
                                     <p className="text-black text-sm">{event.location}</p>
                                     <div className="w-full flex justify-start mt-2">
@@ -195,21 +202,20 @@ export default function Map() {
                                     </div>
                                 </div>
 
-                                {/* 🌍 Event Image (Right Side) */}
-                                <div className="flex-grow flex justify-end">
-                                    <Image 
+                                {/* 🌍 Event Image */}
+                                <div className="flex-shrink-0">
+                                    <Image
                                         src={event.image || `/profile.png`}
                                         alt="Event"
                                         width={80}
                                         height={80}
-                                        className="md:h-20"
+                                        className="rounded-lg object-cover"
                                     />
                                 </div>
                             </li>
                         ))}
                     </ul>
                 </div>
-
             </div>
 
             {/* 🌍 Map Container */}

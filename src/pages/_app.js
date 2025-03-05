@@ -3,10 +3,15 @@ import Footer from '../components/Footer';
 import Header from "../components/Header";
 import { WalletContextProvider } from "../components/WalletContextProvider";
 import Script from 'next/script';
+import Head from "next/head";
+import { SessionProvider } from "next-auth/react";
 
 export default function App({ Component, pageProps }) {
   return (
     <>
+      <SessionProvider session={pageProps.session}>
+
+  
       <WalletContextProvider>
         <div className="flex flex-col min-h-screen">
           <Header />
@@ -23,8 +28,10 @@ export default function App({ Component, pageProps }) {
           </main>
           
           <Footer />
+          
         </div>
       </WalletContextProvider>
+      </SessionProvider>
     </>
   );
 }
