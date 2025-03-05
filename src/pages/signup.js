@@ -56,7 +56,19 @@ export default function SignUp() {
         city: session.user.city || "",
       });
       setProfileImage(session.user.photo_url || null);
-      // Removed setIsStamped and router.push from here
+      if(
+        session?.user?.telegramId &&
+        session?.user?.username &&
+        session?.user?.first_name &&
+        session?.user?.organization &&
+        session?.user?.title &&
+        session?.user?.country &&
+        session?.user?.city &&
+        session?.user?.photo_url
+      ){
+        setIsStamped(true);
+        setTimeout(() => router.push("/recommend"), 2000)
+      }
     }
 
     // Check localStorage for Telegram data on load
@@ -97,7 +109,7 @@ export default function SignUp() {
       console.error("Authentication Error:", response.error);
       alert("Telegram authentication failed: " + response.error);
     } else {
-      console.log("Authentication Successful");
+      console.log("success")
     }
   };
 
@@ -125,11 +137,30 @@ export default function SignUp() {
       ...formData,
       photo_url: profileImage, // Include updated photo if changed
     };
+
     console.log("Submitting updated user data:", updatedUserData);
 
     // Optionally save to backend or localStorage
     localStorage.setItem("userExtraData", JSON.stringify(updatedUserData));
-
+    console.log("Sending request...");
+    const response1 = await fetch("http://localhost:3000/api/user/create", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        name: telegramUser.first_name,
+        email: "john@example.com",
+        organization: formData.organization,
+        title: formData.title,
+        city: formData.city,
+        country: formData.country,
+        telegramUsername: telegramUser.username,
+        image: profileImage,
+      }),
+    });
+    const data = await response1.json();
+    console.log(data, "data")
     // Update session with extra data
     const response = await signIn("credentials", {
       redirect: false,

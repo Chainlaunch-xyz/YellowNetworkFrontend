@@ -35,7 +35,7 @@ const BusinessCard = ({
             <a href={twitter} target="_blank" rel="noopener noreferrer" aria-label="Twitter" className="hover:text-blue-500">
               <FaTwitter />
             </a>
-            <a href={telegram} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="hover:text-blue-400">
+            <a href={`https://t.me/${twitter}`} target="_blank" rel="noopener noreferrer" aria-label="Telegram" className="hover:text-blue-400">
               <FaTelegramPlane />
             </a>
             <a href={linkedIn} target="_blank" rel="noopener noreferrer" aria-label="LinkedIn" className="hover:text-blue-700">
